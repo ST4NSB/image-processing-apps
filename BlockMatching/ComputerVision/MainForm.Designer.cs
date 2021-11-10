@@ -33,9 +33,10 @@ namespace ComputerVision
             this.buttonLoad = new System.Windows.Forms.Button();
             this.openFileDialogA = new System.Windows.Forms.OpenFileDialog();
             this.buttonLoadB = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.blockmatchingBttn = new System.Windows.Forms.Button();
             this.openFileDialogB = new System.Windows.Forms.OpenFileDialog();
             this.richTextBox = new System.Windows.Forms.RichTextBox();
+            this.outputPanel = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
             // panelSourceA
@@ -78,15 +79,15 @@ namespace ComputerVision
             this.buttonLoadB.UseVisualStyleBackColor = true;
             this.buttonLoadB.Click += new System.EventHandler(this.buttonLoadB_Click);
             // 
-            // button1
+            // blockmatchingBttn
             // 
-            this.button1.Location = new System.Drawing.Point(213, 492);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(135, 23);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "Block Match compute";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.blockmatchingBttn.Location = new System.Drawing.Point(213, 492);
+            this.blockmatchingBttn.Name = "blockmatchingBttn";
+            this.blockmatchingBttn.Size = new System.Drawing.Size(135, 23);
+            this.blockmatchingBttn.TabIndex = 4;
+            this.blockmatchingBttn.Text = "Block Match compute";
+            this.blockmatchingBttn.UseVisualStyleBackColor = true;
+            this.blockmatchingBttn.Click += new System.EventHandler(this.button1_Click);
             // 
             // richTextBox
             // 
@@ -96,13 +97,24 @@ namespace ComputerVision
             this.richTextBox.TabIndex = 5;
             this.richTextBox.Text = "";
             // 
+            // outputPanel
+            // 
+            this.outputPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.outputPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.outputPanel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.outputPanel.Location = new System.Drawing.Point(1408, 12);
+            this.outputPanel.Name = "outputPanel";
+            this.outputPanel.Size = new System.Drawing.Size(320, 240);
+            this.outputPanel.TabIndex = 2;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1406, 527);
+            this.ClientSize = new System.Drawing.Size(1846, 527);
+            this.Controls.Add(this.outputPanel);
             this.Controls.Add(this.richTextBox);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.blockmatchingBttn);
             this.Controls.Add(this.buttonLoadB);
             this.Controls.Add(this.buttonLoad);
             this.Controls.Add(this.panelSourceB);
@@ -120,9 +132,10 @@ namespace ComputerVision
         private System.Windows.Forms.Button buttonLoad;
         private System.Windows.Forms.OpenFileDialog openFileDialogA;
         private System.Windows.Forms.Button buttonLoadB;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button blockmatchingBttn;
         private System.Windows.Forms.OpenFileDialog openFileDialogB;
         private System.Windows.Forms.RichTextBox richTextBox;
+        private System.Windows.Forms.Panel outputPanel;
     }
 }
 

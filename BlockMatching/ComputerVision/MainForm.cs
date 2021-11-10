@@ -12,12 +12,15 @@ namespace ComputerVision
 {
     public partial class MainForm : Form
     {
-        private const int _blockSize = 8;
-        private const int _distanceOfBlocks = 9;
+        private bool _showMatrix = false;
+        private const int _blockSize = 2;
+        private const int _distanceOfBlocks = 15;
         private int[,] _resultMatrix;
+        private Bitmap _outputImage = null;
 
         private FastImage _workImageA;
         private FastImage _workImageB;
+        private FastImage _workOut;
 
         public MainForm()
         {
@@ -30,6 +33,8 @@ namespace ComputerVision
             panelSourceA.BackgroundImage = new Bitmap(openFileDialogA.FileName);
             _workImageA = new FastImage(new Bitmap(openFileDialogA.FileName));
             _resultMatrix = new int[_workImageA.Height, _workImageA.Width];
+            _outputImage = new Bitmap(_workImageA.Width / _blockSize, _workImageA.Height / _blockSize);
+            _workOut = new FastImage(_outputImage);
         }
 
         private void buttonLoadB_Click(object sender, EventArgs e)
@@ -68,24 +73,111 @@ namespace ComputerVision
                     }
 
                     var shortestRes = coordSum.OrderBy(x => x.Value).First();
-                    _resultMatrix[j, i] = shortestRes.Key;
+                    _resultMatrix[j, i] = Math.Abs(shortestRes.Key);
                 }
             }
             _workImageA.Unlock();
             _workImageB.Unlock();
 
+            BuildOutput();
+        }
+
+        private void BuildOutput()
+        {
+            if (_showMatrix)
+            {
+                for (int i = 0; i < _resultMatrix.GetLength(0); i++)
+                {
+                    var newLine = false;
+                    for (int j = 0; j < _resultMatrix.GetLength(1); j++)
+                        if (_resultMatrix[i, j] != 0)
+                        {
+                            richTextBox.Text += _resultMatrix[i, j].ToString() + (_resultMatrix[i, j] < 0 ? " " : "  ");
+                            newLine = true;
+                        }
+                    if (newLine)
+                        richTextBox.Text += "\n";
+                }
+            }
+
+            Color c;
+            _workOut.Lock();
             for (int i = 0; i < _resultMatrix.GetLength(0); i++)
             {
-                var newLine = false;
                 for (int j = 0; j < _resultMatrix.GetLength(1); j++)
+                {
                     if (_resultMatrix[i, j] != 0)
                     {
-                        richTextBox.Text += _resultMatrix[i, j].ToString() + (_resultMatrix[i, j] < 0 ? " " : "  ");
-                        newLine = true;
+                        var px = _resultMatrix[i, j];
+                        switch (px)
+                        {
+                            case 1:
+                                c = Color.Black;
+                                break;
+                            case _distanceOfBlocks:
+                                c = Color.White;
+                                break;
+                            default:
+                                var range = 255 / _distanceOfBlocks;
+                                var color = range * px;
+                                c = Color.FromArgb(color, color, color);
+                                break;
+                        }
+
+                        _workOut.SetPixel(j / _blockSize, i / _blockSize, c);
                     }
-                if (newLine)
-                    richTextBox.Text += "\n";
+                }
             }
+            //outputPanel.BackgroundImage = null;
+            //outputPanel.BackgroundImage = _workOut.GetBitMap();
+            _workOut.Unlock();
+
+            ApplySmoothFilter(n: 3);
+        }
+
+        private void ApplySmoothFilter(int n)
+        {
+            Color color;
+
+            int div = ((n + 2) * (n + 2));
+            int[,] H = new int[3, 3]
+            {
+                { 1, n, 1},
+                { n, n * n, n},
+                { 1, n, 1}
+            };
+
+            _workOut.Lock();
+            for (int r = 1; r <= _workOut.Height - 2; r++)
+            {
+                for (int c = 1; c <= _workOut.Width - 2; c++)
+                {
+                    int sr = 0, sg = 0, sb = 0;
+                    for (int row = r - 1; row <= r + 1; row++)
+                    {
+                        for (int col = c - 1; col <= c + 1; col++)
+                        {
+                            Color i = _workOut.GetPixel(col, row);
+                            byte R = i.R;
+                            byte G = i.G;
+                            byte B = i.B;
+
+                            sr += R * H[row - r + 1, col - c + 1];
+                            sg += G * H[row - r + 1, col - c + 1];
+                            sb += B * H[row - r + 1, col - c + 1];
+                        }
+                    }
+                    sr /= div;
+                    sg /= div;
+                    sb /= div;
+                    color = Color.FromArgb(sr, sg, sb);
+
+                    _workOut.SetPixel(c, r, color);
+                }
+            }
+            outputPanel.BackgroundImage = null;
+            outputPanel.BackgroundImage = _workOut.GetBitMap();
+            _workOut.Unlock();
         }
 
         private int CalculateSumFor2Blocks(int Ax, int Ay, int Bx, int By)

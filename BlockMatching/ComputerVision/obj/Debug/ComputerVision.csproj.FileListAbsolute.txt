@@ -24,3 +24,16 @@ C:\Users\AdiB\Desktop\BlockMatching\ComputerVision\obj\Debug\ComputerVision.cspr
 C:\Users\AdiB\Desktop\BlockMatching\ComputerVision\obj\Debug\ComputerVision.csproj.CopyComplete
 C:\Users\AdiB\Desktop\BlockMatching\ComputerVision\obj\Debug\ComputerVision.exe
 C:\Users\AdiB\Desktop\BlockMatching\ComputerVision\obj\Debug\ComputerVision.pdb
+D:\Projects\github\image-processing-apps\BlockMatching\ComputerVision\bin\Debug\ComputerVision.exe
+D:\Projects\github\image-processing-apps\BlockMatching\ComputerVision\bin\Debug\ComputerVision.pdb
+D:\Projects\github\image-processing-apps\BlockMatching\ComputerVision\bin\Debug\ImageUtil.dll
+D:\Projects\github\image-processing-apps\BlockMatching\ComputerVision\bin\Debug\System.ValueTuple.dll
+D:\Projects\github\image-processing-apps\BlockMatching\ComputerVision\bin\Debug\System.ValueTuple.xml
+D:\Projects\github\image-processing-apps\BlockMatching\ComputerVision\obj\Debug\ComputerVision.csprojAssemblyReference.cache
+D:\Projects\github\image-processing-apps\BlockMatching\ComputerVision\obj\Debug\ComputerVision.MainForm.resources
+D:\Projects\github\image-processing-apps\BlockMatching\ComputerVision\obj\Debug\ComputerVision.Properties.Resources.resources
+D:\Projects\github\image-processing-apps\BlockMatching\ComputerVision\obj\Debug\ComputerVision.csproj.GenerateResource.cache
+D:\Projects\github\image-processing-apps\BlockMatching\ComputerVision\obj\Debug\ComputerVision.csproj.CoreCompileInputs.cache
+D:\Projects\github\image-processing-apps\BlockMatching\ComputerVision\obj\Debug\ComputerVision.csproj.CopyComplete
+D:\Projects\github\image-processing-apps\BlockMatching\ComputerVision\obj\Debug\ComputerVision.exe
+D:\Projects\github\image-processing-apps\BlockMatching\ComputerVision\obj\Debug\ComputerVision.pdb
