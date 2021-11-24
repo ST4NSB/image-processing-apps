@@ -1,0 +1,11 @@
+D:\Projects\github\image-processing-apps\ImageInpaiting\ComputerVision\bin\Debug\ComputerVision.exe
+D:\Projects\github\image-processing-apps\ImageInpaiting\ComputerVision\bin\Debug\ComputerVision.pdb
+D:\Projects\github\image-processing-apps\ImageInpaiting\ComputerVision\bin\Debug\ImageUtil.dll
+D:\Projects\github\image-processing-apps\ImageInpaiting\ComputerVision\obj\Debug\ComputerVision.csprojAssemblyReference.cache
+D:\Projects\github\image-processing-apps\ImageInpaiting\ComputerVision\obj\Debug\ComputerVision.MainForm.resources
+D:\Projects\github\image-processing-apps\ImageInpaiting\ComputerVision\obj\Debug\ComputerVision.Properties.Resources.resources
+D:\Projects\github\image-processing-apps\ImageInpaiting\ComputerVision\obj\Debug\ComputerVision.csproj.GenerateResource.cache
+D:\Projects\github\image-processing-apps\ImageInpaiting\ComputerVision\obj\Debug\ComputerVision.csproj.CoreCompileInputs.cache
+D:\Projects\github\image-processing-apps\ImageInpaiting\ComputerVision\obj\Debug\ComputerVision.csproj.CopyComplete
+D:\Projects\github\image-processing-apps\ImageInpaiting\ComputerVision\obj\Debug\ComputerVision.exe
+D:\Projects\github\image-processing-apps\ImageInpaiting\ComputerVision\obj\Debug\ComputerVision.pdb

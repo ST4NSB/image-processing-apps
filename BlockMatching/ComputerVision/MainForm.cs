@@ -33,7 +33,7 @@ namespace ComputerVision
             panelSourceA.BackgroundImage = new Bitmap(openFileDialogA.FileName);
             _workImageA = new FastImage(new Bitmap(openFileDialogA.FileName));
             _resultMatrix = new int[_workImageA.Height, _workImageA.Width];
-            _outputImage = new Bitmap(_workImageA.Width / _blockSize, _workImageA.Height / _blockSize);
+            _outputImage = new Bitmap(_workImageA.Width, _workImageA.Height);
             _workOut = new FastImage(_outputImage);
         }
 
@@ -73,7 +73,9 @@ namespace ComputerVision
                     }
 
                     var shortestRes = coordSum.OrderBy(x => x.Value).First();
-                    _resultMatrix[j, i] = Math.Abs(shortestRes.Key);
+                    for (int r = j; r < j + _blockSize; r++)
+                        for (int c = i; c < i + _blockSize; c++)
+                            _resultMatrix[r, c] = Math.Abs(shortestRes.Key);
                 }
             }
             _workImageA.Unlock();
@@ -106,8 +108,8 @@ namespace ComputerVision
             {
                 for (int j = 0; j < _resultMatrix.GetLength(1); j++)
                 {
-                    if (_resultMatrix[i, j] != 0)
-                    {
+                    //if (_resultMatrix[i, j] != 0)
+                    //{
                         var px = _resultMatrix[i, j];
                         switch (px)
                         {
@@ -118,21 +120,23 @@ namespace ComputerVision
                                 c = Color.White;
                                 break;
                             default:
-                                var range = 255 / _distanceOfBlocks;
+                            {
+                                var range = (255 / _distanceOfBlocks);                                    
                                 var color = range * px;
                                 c = Color.FromArgb(color, color, color);
+                            }
                                 break;
                         }
 
-                        _workOut.SetPixel(j / _blockSize, i / _blockSize, c);
-                    }
+                        _workOut.SetPixel(j, i, c);
+                    //}
                 }
             }
             //outputPanel.BackgroundImage = null;
             //outputPanel.BackgroundImage = _workOut.GetBitMap();
             _workOut.Unlock();
 
-            ApplySmoothFilter(n: 3);
+            ApplySmoothFilter(n: 2);
         }
 
         private void ApplySmoothFilter(int n)
