@@ -9,3 +9,5 @@ D:\Projects\github\image-processing-apps\ImageInpaiting\ComputerVision\obj\Debug
 D:\Projects\github\image-processing-apps\ImageInpaiting\ComputerVision\obj\Debug\ComputerVision.csproj.CopyComplete
 D:\Projects\github\image-processing-apps\ImageInpaiting\ComputerVision\obj\Debug\ComputerVision.exe
 D:\Projects\github\image-processing-apps\ImageInpaiting\ComputerVision\obj\Debug\ComputerVision.pdb
+D:\Projects\github\image-processing-apps\ImageInpaiting\ComputerVision\bin\Debug\System.ValueTuple.dll
+D:\Projects\github\image-processing-apps\ImageInpaiting\ComputerVision\bin\Debug\System.ValueTuple.xml
