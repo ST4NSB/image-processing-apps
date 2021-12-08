@@ -56,9 +56,17 @@ namespace ComputerVision
                     byte G = color.G;
                     byte B = color.B;
 
-                    byte average = (byte)((R + G + B) / 3);
+                    var panelI = GetNormalizedValue(i, workImage.Width, panelSource.Width);
+                    var panelJ = GetNormalizedValue(j, workImage.Height, panelSource.Height);
 
-                    color = Color.FromArgb(average, average, average);
+                    if (IsPointInPoly(new Point(panelI, panelJ)))
+                    {
+                        color = Color.Black;
+                        workImage.SetPixel(i, j, color);
+                        continue;
+                    }
+                    
+                    color = Color.FromArgb(R, G, B);
 
                     workImage.SetPixel(i, j, color);
                 }
@@ -71,7 +79,7 @@ namespace ComputerVision
 
             //g.DrawRectangle(new Pen(_penColor, _penSize), new Rectangle(test.X, test.Y, _pointSize, _pointSize));
 
-            MessageBox.Show($"{GetConversionNumber(workImage.Width / 2, workImage.Width, panelSource.Width)}");
+            // MessageBox.Show($"{GetNormalizedValue(workImage.Width / 2, workImage.Width, panelSource.Width)}");
         }
 
         private void panelSource_Click(object sender, EventArgs e)
@@ -105,7 +113,7 @@ namespace ComputerVision
             return _graphicPath.IsVisible(pt);
         }
 
-        private int GetConversionNumber(int oldNumber, int oldMax, int newMax, int oldMin = 0, int newMin = 0)
+        private int GetNormalizedValue(int oldNumber, int oldMax, int newMax, int oldMin = 0, int newMin = 0)
         {
             return (((oldNumber - oldMin) * (newMax - newMin)) / (oldMax - oldMin)) + newMin;
         }
