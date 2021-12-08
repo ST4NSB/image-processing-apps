@@ -1,31 +1,34 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-using System.Drawing.Imaging;
 using System.Linq;
+using System.Drawing.Drawing2D;
 
 namespace ComputerVision
 {
     public partial class MainForm : Form
     {
         private List<Point> _selectedArea;
+        //private Point test;
 
         private const int _pointSize = 3;
         private const int _penSize = 3;
         private Color _penColor = Color.Red;
+        private const int _thresholdPerPixel = 30;
+        private const int _contextSize = 5;
+        private const int _searchRadius = 7;
 
         private string sSourceFileName = "";
         private FastImage workImage;
         private Bitmap image = null;
+        private GraphicsPath _graphicPath;
 
         public MainForm()
         {
             InitializeComponent();
             _selectedArea = new List<Point>();
+            _graphicPath = new GraphicsPath();
         }
 
         private void buttonLoad_Click(object sender, EventArgs e)
@@ -35,6 +38,8 @@ namespace ComputerVision
             panelSource.BackgroundImage = new Bitmap(sSourceFileName);
             image = new Bitmap(sSourceFileName);
             workImage = new FastImage(image);
+
+           // test = new Point(workImage.Width / 2, workImage.Height / 2);
         }
 
         private void buttonGrayscale_Click(object sender, EventArgs e)
@@ -61,7 +66,12 @@ namespace ComputerVision
             panelDestination.BackgroundImage = null;
             panelDestination.BackgroundImage = workImage.GetBitMap();
             workImage.Unlock();
-            
+
+            //Graphics g = panelSource.CreateGraphics();
+
+            //g.DrawRectangle(new Pen(_penColor, _penSize), new Rectangle(test.X, test.Y, _pointSize, _pointSize));
+
+            MessageBox.Show($"{GetConversionNumber(workImage.Width / 2, workImage.Width, panelSource.Width)}");
         }
 
         private void panelSource_Click(object sender, EventArgs e)
@@ -84,6 +94,28 @@ namespace ComputerVision
         {
             Graphics g = panelSource.CreateGraphics();
             g.DrawLine(new Pen(_penColor, _penSize), _selectedArea.First(), _selectedArea.Last());
+            _graphicPath.AddPolygon(_selectedArea.ToArray());
+        }
+
+        private bool IsPointInPoly(Point pt)
+        {
+            if (pt.X < 0 || pt.X >= panelSource.Width) return false;
+            if (pt.Y < 0 || pt.Y >= panelSource.Height) return false;
+
+            return _graphicPath.IsVisible(pt);
+        }
+
+        private int GetConversionNumber(int oldNumber, int oldMax, int newMax, int oldMin = 0, int newMin = 0)
+        {
+            return (((oldNumber - oldMin) * (newMax - newMin)) / (oldMax - oldMin)) + newMin;
+        }
+
+        private bool IsInImageBox(int i, int j)
+        {
+            if (i < 0 || i >= workImage.Height) return false;
+            if (j < 0 || j >= workImage.Height) return false;
+
+            return true;
         }
     }
 }
