@@ -15,10 +15,13 @@ namespace ComputerVision
         private const int _pointSize = 1;
         private const int _penSize = 1;
         private Color _penColor = Color.Red;
-        private const int _thresholdPerPixel = 50;
-        private const int _thresholdPoints = 2;
+        private const int _thresholdPerPixel = 45;
+        private const int _thresholdPoints = 3;
         private const int _contextSize = 21;
-        private const int _searchRadius = 13;
+        private const int _searchRadius = 11;
+
+        private int _noContext = 0;
+        private int _noSearchContext = 0;
 
         private string sSourceFileName = "";
         private FastImage workImage;
@@ -101,6 +104,7 @@ namespace ComputerVision
                     {
                         var contextValidPoints = GetContextListValidPoints(i, j);
 
+                        _noContext += !contextValidPoints.Any() ? 1 : 0;
                         if (!contextValidPoints.Any()) continue;
 
                         var startX = i - ((_contextSize - 1) / 2);
@@ -108,19 +112,12 @@ namespace ComputerVision
 
                         var sadDict = GetInPaintingPoint(contextValidPoints, startX, startY);
 
+                        _noSearchContext += !sadDict.Any() ? 1 : 0;
                         if (!sadDict.Any()) continue;
 
-                        int avgR = 0, avgG = 0, avgB = 0;
-                        foreach(var point in sadDict)
-                        {
-                            var currColor = workImage.GetPixel(point.Key.x, point.Key.y);
-                            avgR += currColor.R;
-                            avgG += currColor.G;
-                            avgB += currColor.B;
-                        }
-                        avgR /= sadDict.Count;
-                        avgG /= sadDict.Count;
-                        avgB /= sadDict.Count;
+                        int avgR = (int)sadDict.Average(pt => workImage.GetPixel(pt.Key.x, pt.Key.y).R);
+                        int avgG = (int)sadDict.Average(pt => workImage.GetPixel(pt.Key.x, pt.Key.y).G);
+                        int avgB = (int)sadDict.Average(pt => workImage.GetPixel(pt.Key.x, pt.Key.y).B);
 
                         //var middleValue = sadDict.OrderBy(x => x.Value).FirstOrDefault().Key;
                         //color = workImage.GetPixel(middleValue.x, middleValue.y);
@@ -135,6 +132,8 @@ namespace ComputerVision
             panelDestination.BackgroundImage = null;
             panelDestination.BackgroundImage = workImage.GetBitMap();
             workImage.Unlock();
+
+            MessageBox.Show($"Number of no contexts: {_noContext} \nNumber of no search contexts: {_noSearchContext}");
         }
 
         private Dictionary<(int x, int y), int> GetInPaintingPoint(List<(int x, int y)> contextValidPoints, int startX, int startY)
