@@ -15,9 +15,10 @@ namespace ComputerVision
         private const int _pointSize = 1;
         private const int _penSize = 1;
         private Color _penColor = Color.Red;
-        private const int _thresholdPerPixel = 25;
+        private const int _thresholdPerPixel = 50;
+        private const int _thresholdPoints = 2;
         private const int _contextSize = 21;
-        private const int _searchRadius = 11;
+        private const int _searchRadius = 13;
 
         private string sSourceFileName = "";
         private FastImage workImage;
@@ -101,34 +102,30 @@ namespace ComputerVision
                         var contextValidPoints = GetContextListValidPoints(i, j);
 
                         if (!contextValidPoints.Any()) continue;
-                        
+
                         var startX = i - ((_contextSize - 1) / 2);
                         var startY = j - ((_contextSize - 1) / 2);
 
-                        int[] dirX = new int[] { 0, 1, 0, -1 }; 
-                        int[] dirY = new int[] { -1, 0, 1, 0 };
+                        var sadDict = GetInPaintingPoint(contextValidPoints, startX, startY);
 
-                        //var sadDict = new Dictionary<(int x, int y), int>();
+                        if (!sadDict.Any()) continue;
 
-                        for (int k = 0; k < dirX.Length; k++)
+                        int avgR = 0, avgG = 0, avgB = 0;
+                        foreach(var point in sadDict)
                         {
-                            for (int sr = 0; sr < _searchRadius; sr++)
-                            {
-                                var srX = startX + (dirX[k] + (dirX[k] == 0 ? 0 : dirX[k] > 0 ? sr : -sr));
-                                var srY = startY + (dirY[k] + (dirY[k] == 0 ? 0 : dirY[k] > 0 ? sr : -sr));
-
-                                var sadValue = GetSumOfAbsDiff(contextValidPoints, startX, startY, srX, srY);
-                                
-                                if (sadValue < (_thresholdPerPixel * contextValidPoints.Count))
-                                {
-                                    var middleValueX = srX + ((_contextSize - 1) / 2);
-                                    var middleValueY = srY + ((_contextSize - 1) / 2);
-                                    //sadDict.Add((middleValueX, middleValueY), sadValue);
-                                    color = workImage.GetPixel(middleValueX, middleValueY);
-                                    workImage.SetPixel(i, j, color);
-                                }
-                            }
+                            var currColor = workImage.GetPixel(point.Key.x, point.Key.y);
+                            avgR += currColor.R;
+                            avgG += currColor.G;
+                            avgB += currColor.B;
                         }
+                        avgR /= sadDict.Count;
+                        avgG /= sadDict.Count;
+                        avgB /= sadDict.Count;
+
+                        //var middleValue = sadDict.OrderBy(x => x.Value).FirstOrDefault().Key;
+                        //color = workImage.GetPixel(middleValue.x, middleValue.y);
+                        color = Color.FromArgb(avgR, avgG, avgB);
+                        workImage.SetPixel(i, j, color);
                         continue;
                     }
 
@@ -138,6 +135,36 @@ namespace ComputerVision
             panelDestination.BackgroundImage = null;
             panelDestination.BackgroundImage = workImage.GetBitMap();
             workImage.Unlock();
+        }
+
+        private Dictionary<(int x, int y), int> GetInPaintingPoint(List<(int x, int y)> contextValidPoints, int startX, int startY)
+        {
+            var sadDict = new Dictionary<(int x, int y), int>();
+            int[] dirX = new int[] { 0, 1, 0, -1 };
+            int[] dirY = new int[] { -1, 0, 1, 0 };
+
+            for (int k = 0; k < dirX.Length; k++)
+            {
+                for (int sr = 0; sr < _searchRadius; sr++)
+                {
+                    var srX = startX + (dirX[k] + (dirX[k] == 0 ? 0 : dirX[k] > 0 ? sr : -sr));
+                    var srY = startY + (dirY[k] + (dirY[k] == 0 ? 0 : dirY[k] > 0 ? sr : -sr));
+
+                    var sadValue = GetSumOfAbsDiff(contextValidPoints, startX, startY, srX, srY);
+
+                    if (sadValue >= _thresholdPerPixel && sadValue < (_thresholdPerPixel * contextValidPoints.Count)
+                        && sadDict.Count <= _thresholdPoints)
+                    {
+                        var middleValueX = srX + ((_contextSize - 1) / 2);
+                        var middleValueY = srY + ((_contextSize - 1) / 2);
+
+                        sadDict.Add((middleValueX, middleValueY), sadValue);
+                        //return sadDict;
+                    }
+                }
+            }
+
+            return sadDict;
         }
 
         private int GetSumOfAbsDiff(List<(int x, int y)> contextValidPoints, int srcX, int srcY, int trgX, int trgY)
