@@ -16,9 +16,9 @@ namespace ComputerVision
         private const int _penSize = 1;
         private Color _penColor = Color.Red;
         private const int _thresholdPerPixel = 45;
-        private const int _thresholdPoints = 3;
-        private const int _contextSize = 21;
-        private const int _searchRadius = 11;
+        private const int _thresholdPoints = 1;
+        private const int _contextSize = 35;
+        private const int _searchRadius = 21;
 
         private int _noContext = 0;
         private int _noSearchContext = 0;
@@ -142,7 +142,7 @@ namespace ComputerVision
             int[] dirX = new int[] { 0, 1, 0, -1 };
             int[] dirY = new int[] { -1, 0, 1, 0 };
 
-            for (int k = 0; k < dirX.Length; k++)
+            for (int k = 0; k < 4; k++)
             {
                 for (int sr = 0; sr < _searchRadius; sr++)
                 {
@@ -151,13 +151,20 @@ namespace ComputerVision
 
                     var sadValue = GetSumOfAbsDiff(contextValidPoints, startX, startY, srX, srY);
 
-                    if (sadValue >= _thresholdPerPixel && sadValue < (_thresholdPerPixel * contextValidPoints.Count)
+                    if (sadValue > 0 && sadValue < (_thresholdPerPixel * contextValidPoints.Count)
                         && sadDict.Count <= _thresholdPoints)
                     {
                         var middleValueX = srX + ((_contextSize - 1) / 2);
                         var middleValueY = srY + ((_contextSize - 1) / 2);
 
+                        var ptX = GetNormalizedValue(middleValueX, workImage.Width, panelSource.Width);
+                        var ptY = GetNormalizedValue(middleValueY, workImage.Height, panelSource.Height);
+
+                        if (IsPointInPoly(new Point(ptX, ptY))) continue;
+
                         sadDict.Add((middleValueX, middleValueY), sadValue);
+
+                        if (sadDict.Count >= _thresholdPoints) return sadDict;
                         //return sadDict;
                     }
                 }
